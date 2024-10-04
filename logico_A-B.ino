@@ -1,5 +1,5 @@
 const int magneto = 2;  // колисество сигналов от вала для сдвига
-
+const int progreso = 44;  /// сдвиг на 4,5мм шаги для мотора
 // testo  Trabajo counterTick fin
 
 //int testDiod = 4;  //////////////////////подключаем светодиод
@@ -36,7 +36,7 @@ long n = 0;             // число на вводе
 long tiempoNumber = 0;  // наборная из клавиатуры
 
 
-int progreso = 45;  /// сдвиг на 4,5мм
+
 // Логический флаг для сдвига
 bool flagProgreso = 0;
 
@@ -133,7 +133,7 @@ void setup() {
   //pinMode(pinProgreso, INPUT_PULLUP); // кнопка оборота шпинделя
   pinMode(disposicion, INPUT_PULLUP);  // кнопка дома
   pinMode(EnablePin, OUTPUT);          // stop  уладчик
-  digitalWrite(EnablePin, 1);          // состояние выключен мотор чтобы не грелся
+  digitalWrite(EnablePin, HIGH);          // состояние выключен мотор чтобы не грелся
   pinMode(dereccion, OUTPUT);          // направление уладчик
   digitalWrite(dereccion, 0);          // состояние
   pinMode(stepMotoApilador, OUTPUT);   // уладчик
@@ -307,10 +307,10 @@ void Derecha() {
     btnTimer = millis();
     Serial.println("press puntoDerechaFlag");
 
-   // digitalWrite(EnablePin, 1);  //  выключаем мотор
+   // digitalWrite(EnablePin, HIGH);  //  выключаем мотор
    // delay(50);
     digitalWrite(dereccion, 1);  // мотор меняем направление
-   // digitalWrite(EnablePin, 0);  //  включаем мотор
+   // digitalWrite(EnablePin, LOW);  //  включаем мотор
   }
   if (!btnState1 && puntoDerechaFlag) {
     puntoDerechaFlag = false;
@@ -325,10 +325,10 @@ void Derecha() {
     btnTimer = millis();
     Serial.println("press puntoIzcuierdaFlag");
 
-   // digitalWrite(EnablePin, 1);  //  выключаем мотор
+   // digitalWrite(EnablePin, HIGH);  //  выключаем мотор
     delay(50);
     digitalWrite(dereccion, 0);  // мотор меняем направление
-    //digitalWrite(EnablePin, 0);  //  включаем мотор
+    //digitalWrite(EnablePin, LOW);  //  включаем мотор
   }
   if (!btnState2 && puntoIzcuierdaFlag && millis() - btnTimer > 100) {
     puntoIzcuierdaFlag = false;
@@ -342,7 +342,7 @@ void Trabajadora() {
 
   if (flagTrabajadora && flagProgreso) {
 
-    digitalWrite(EnablePin, 0);         //  включаем мотор
+    digitalWrite(EnablePin, LOW);         //  включаем мотор
     for (int n = 0; n < progreso; n++)  ////// ghjmmm
     {
       Serial.println("to es sdvig");
@@ -351,12 +351,15 @@ void Trabajadora() {
       delayMicroseconds(frequency);
       digitalWrite(stepMotoApilador, LOW);  // стоп мотор
     }
-    digitalWrite(EnablePin, 1);  //  вsключаем мотор
+    digitalWrite(EnablePin, HIGH);  //  вsключаем мотор
     flagProgreso = false;
     // flagTrabajadora =0;
   } else {
     digitalWrite(stepMotoApilador, LOW);  // стоп мотор
+    digitalWrite(EnablePin, HIGH);  //  выключаем мотор
+    
   }
+  
 }
 
 void Disposicion() {
@@ -366,16 +369,17 @@ void Disposicion() {
     btnTimer = millis();
     Serial.println("press Disposicion");
 
-    digitalWrite(EnablePin, 1);  //  выключаем мотор
+   // digitalWrite(EnablePin, HIGH);  //  выключаем мотор
                                  //  delay(50);
     digitalWrite(dereccion, 1);  // мотор меняем направление
-    digitalWrite(EnablePin, 0);  //  включаем мотор
+    digitalWrite(EnablePin, LOW);  //  включаем мотор
     // переделать условия под концевик
     while (!digitalRead(disposicion) && digitalRead(izcuierda)) {
       digitalWrite(stepMotoApilador, HIGH);  // мотор
       delayMicroseconds(frequency);
       digitalWrite(stepMotoApilador, LOW);  // стоп мотор
     }
+    digitalWrite(EnablePin, HIGH);  //  выключаем мотор
   }
   if (!btnStateDisposicion && puntoIzcuierdaFlag && millis() - btnTimer > 100) {
     puntoDerechaFlag = false;
@@ -406,4 +410,16 @@ void loop() {
   Trabajadora();
   Disposicion();
   buttonTick2();
+
+/* 
+  
+  if(EnablePin!=HIGH)
+  {
+    Serial.println("Vamos");
+  }
+   if(EnablePin!=LOW)
+  {
+    Serial.println("No_Vamos");
+  }
+*/
 }
