@@ -1,6 +1,5 @@
 const int magneto = 2;  // колисество сигналов от вала для сдвига
-const int progreso = 40;  /// сдвиг на 4,5мм шаги для мотора
-// testo  Trabajo counterTick fin
+
 
 //int testDiod = 4;  //////////////////////подключаем светодиод
 
@@ -17,6 +16,22 @@ CHANGE (изменение) - срабатывает при изменении �
 LOW (низкий) - срабатывает постоянно при сигнале LOW
 (не поддерживается на ESP8266)
 */
+
+// combiado
+
+int address=10;
+long lento;
+#define TicksA 3    // пин энкодера TickA
+#define TicksB 10    // пин энкодера
+#define ENC_TYPE 1 // тип энкодера, 0 или 1
+
+volatile boolean states0, lastStates, turnsFlag;
+volatile int encsCounter;
+
+int Ubutton = 11;
+bool flagUbutton = false;
+
+
 
 /* сдвиг после считывания оборота вала со шпулей*/
 
@@ -36,7 +51,7 @@ long n = 0;             // число на вводе
 long tiempoNumber = 0;  // наборная из клавиатуры
 
 
-
+int progreso = 45;  /// сдвиг на 4,5мм
 // Логический флаг для сдвига
 bool flagProgreso = 0;
 
@@ -99,12 +114,6 @@ const int moto = 6;          // motor rele
 
 const int rotor = 4;  // пин датчика катушки
 
-//счетчик
-#define TickA  2  // пин счетчик А
-#define TickB  5  // пин счетчик B
-#define ENC_TYPE 1    // тип энкодера, 0 или 1
-volatile int encCounter;
-volatile boolean state0, lastState, turnFlag;
 
 
 void setup() {
@@ -167,6 +176,11 @@ void setup() {
   
   //attachInterrupt(0, int0, CHANGE);// при использовании счетчика
   attachInterrupt(0, buttonTick, CHANGE);  //++
+
+    attachInterrupt(1, int0, CHANGE);
+  pinMode(Ubutton, INPUT_PULLUP);
+  encCounter = EEPROM.get(address, lento);
+
                                            // attachInterrupt(0, buttonTick, LOW);
   lcd.clear();
 }
@@ -395,6 +409,9 @@ void loop() {
     // lcd.clear();
     lcd.setCursor(3, 0);
     lcd.print(String(counter));
+
+     lcd.setCursor(3, 1);
+    lcd.print(String(encCounter));
   }
 
   if (counter > 0) {
