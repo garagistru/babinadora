@@ -1,5 +1,6 @@
 const int magneto = 2;  // колисество сигналов от вала для сдвига
 
+// testo  Trabajo counterTick fin
 
 //int testDiod = 4;  //////////////////////подключаем светодиод
 
@@ -16,9 +17,6 @@ CHANGE (изменение) - срабатывает при изменении �
 LOW (низкий) - срабатывает постоянно при сигнале LOW
 (не поддерживается на ESP8266)
 */
-
-// combiado
-
 int address=10;
 long lento;
 #define TicksA 3    // пин энкодера TickA
@@ -30,8 +28,15 @@ volatile int encsCounter;
 
 int Ubutton = 11;
 bool flagUbutton = false;
+uint32_t btnTimer = 0;  /// на месте
 
 
+//счетчик 2
+#define TickA  2  // пин счетчик А
+#define TickB  5  // пин счетчик B
+#define ENC_TYPE 1    // тип энкодера, 0 или 1
+volatile int encCounter;
+volatile boolean state0, lastState, turnFlag;
 
 /* сдвиг после считывания оборота вала со шпулей*/
 
@@ -98,7 +103,7 @@ LiquidCrystal_I2C lcd(0x27, 16, 2);  // экземпляр жк экрана
 
 bool puntoIzcuierdaFlag = false;  // флаг левого положения
 bool puntoDerechaFlag = false;    // флаг правого положения
-uint32_t btnTimer = 0;            // таймер кнопок
+//uint32_t btnTimer = 0;            // таймер кнопок 
 //**************///**************///*****************
 
 volatile int counterTick = 0;       // переменная-счётчик
@@ -160,10 +165,15 @@ void setup() {
   // pinMode(PinLamp, OUTPUT);
   digitalWrite(moto, 1);
   //pinMode(testDiod, OUTPUT);  /////////////////////////////
-  pinMode(TickA, INPUT_PULLUP);
+  pinMode(TicksA, INPUT_PULLUP);
 
   pinMode(rotor, INPUT_PULLUP);
+  pinMode(TicksB, INPUT_PULLUP);
+  
+  //счетчик 2
+  pinMode(TickA, INPUT_PULLUP);
   pinMode(TickB, INPUT_PULLUP);
+  
   //  pinMode(2, INPUT);
   // FALLING - при нажатии на кнопку будет сигнал 0, его и ловим
   // attachInterrupt(0, btnIsr, FALLING);
@@ -177,26 +187,26 @@ void setup() {
   //attachInterrupt(0, int0, CHANGE);// при использовании счетчика
   attachInterrupt(0, buttonTick, CHANGE);  //++
 
-    attachInterrupt(1, int0, CHANGE);
+    attachInterrupt(1, ints0, CHANGE);
   pinMode(Ubutton, INPUT_PULLUP);
-  encCounter = EEPROM.get(address, lento);
+  encsCounter = EEPROM.get(address, lento);
 
                                            // attachInterrupt(0, buttonTick, LOW);
   lcd.clear();
 }
 //***счетчик**************************************************************
 
-void int0() {
-  state0 = digitalRead(TickA);
-  if (state0 != lastState) {
+void ints0() {
+  states0 = digitalRead(TicksA);
+  if (states0 != lastStates) {
 #if (ENC_TYPE == 1)
-    turnFlag = !turnFlag;
-    if (turnFlag)
-      encCounter += (digitalRead(TickB) != lastState) ? -1 : 1;
+    turnsFlag = !turnsFlag;
+    if (turnsFlag)
+      encsCounter += (digitalRead(TicksB) != lastStates) ? -1 : 1;
 #else
-    encCounter += (digitalRead(TickB) != lastState) ? -1 : 1;
+    encsCounter += (digitalRead(TicksB) != lastStates) ? -1 : 1;
 #endif
-    lastState = state0;
+    lastStates = states0;
 
 
 
@@ -225,7 +235,7 @@ void Recalculo() {
 
     lcd.clear();
     lcd.setCursor(0, 0);
-    lcd.print(String("Trabajo ") + data.largo);
+    lcd.print(String("Trabajo ") + EEPROM.get(address, lento));
     delay(2000);
     Serial.println(String("Trabajo "));
     // обнуление счетчика
@@ -267,7 +277,7 @@ void buttonTick()  // сработка от прерывания счетчик
    // digitalWrite(testDiod, 1);  //  сигнал diod
   }
 
-  else if (counter >= data.largo) {
+  else if (counter >= EEPROM.get(address, lento)) {
     //                                     digitalWrite(PinLamp, 1);  //  сигнал 0 на реле
  //   digitalWrite(testDiod, 0);  //  сигнал diod
 
@@ -286,14 +296,14 @@ void buttonTick()  // сработка от прерывания счетчик
 void buttonTick2()  // сработка от прерывания для сдвига
 {
 
-  bool btnStateTick = !digitalRead(rotor);
-  if (btnStateTick && !intFlagTick) {
+  bool btnStatesTick = !digitalRead(rotor);
+  if (btnStatesTick && !intFlagTick) {
     intFlagTick = true;
     counterTick++;
     Serial.print("moto\t");
     Serial.println(String(counterTick));
   }
-  if (!btnStateTick && intFlagTick) {
+  if (!btnStatesTick && intFlagTick) {
     intFlagTick = false;
   }
 
@@ -406,12 +416,20 @@ void Disposicion() {
 //*************************************************************
 void loop() {
   {
+    
+    //
+   // Serial.print(String("coco - "));
+   //Serial.println(String(lento));
+    //
+    
     // lcd.clear();
     lcd.setCursor(3, 0);
-    lcd.print(String(counter));
+    lcd.print( String(counter)+" mm");
 
-     lcd.setCursor(3, 1);
-    lcd.print(String(encCounter));
+     lcd.setCursor(0, 1);
+    lcd.print("medido "+ String(encsCounter)+" metros");
+   Serial.println(encsCounter);
+   // delay(500);
   }
 
   if (counter > 0) {
@@ -427,16 +445,53 @@ void loop() {
   Trabajadora();
   Disposicion();
   buttonTick2();
+//*************************************
+encsCounter = constrain(encsCounter, 0, 600);
+  // int coco=map(encCounter,-300,300,0, 600);  ///длинна
+  // coco= constrain(coco,0,600);
+    // Serial.println("coco - "+String(coco));
 
-/* 
-  
-  if(EnablePin!=HIGH)
-  {
-    Serial.println("Vamos");
-  }
-   if(EnablePin!=LOW)
-  {
-    Serial.println("No_Vamos");
-  }
+ // Serial.println("encsCounter = " + String(encsCounter));
+  delay(300);
+  /*int beta=(EEPROM.get(address, lento));
+  Serial.println(String(beta));
+  delay(600);
+  Serial.println("*EEPROM = " + String(EEPROM.get(address, lento)));
+  delay(600);
 */
+  bool btnsState = !digitalRead(Ubutton);
+  if (btnsState && !flagUbutton && millis() - btnTimer > 100)
+  {
+    flagUbutton = true;
+    btnTimer = millis();
+    // Serial.println("press");
+  }
+  if (btnsState && flagUbutton && millis() - btnTimer > 500)
+  {
+    btnTimer = millis();
+    EEPROM.put(address, encsCounter);
+    Serial.println("press hold");
+  }
+  if (!btnsState && flagUbutton && millis() - btnTimer > 500)
+  {
+    flagUbutton = false;
+    btnTimer = millis();
+    // Serial.println("release");
+  }
+///********************
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
