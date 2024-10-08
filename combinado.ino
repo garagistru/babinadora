@@ -267,7 +267,7 @@ void buttonTick()  // сработка от прерывания счетчик
     intFlagTick = false;
   }
 
-  if (intFlag && counter < data.largo) {
+  if (intFlag && counter < EEPROM.get(address, lento)) {
     // intFlag = false;  // сбрасываем
     // совершаем какие-то действия
     // counter++;  // + нажатие
@@ -427,9 +427,10 @@ void loop() {
     lcd.print( String(counter)+" mm");
 
      lcd.setCursor(0, 1);
-    lcd.print("medido "+ String(encsCounter)+" metros");
-   Serial.println(encsCounter);
-   // delay(500);
+    int asco=EEPROM.get(address, lento);
+    lcd.print( String(encsCounter)+"     " +String(asco));
+//   Serial.println(encsCounter);
+    delay(300);
   }
 
   if (counter > 0) {
@@ -452,7 +453,7 @@ encsCounter = constrain(encsCounter, 0, 600);
     // Serial.println("coco - "+String(coco));
 
  // Serial.println("encsCounter = " + String(encsCounter));
-  delay(300);
+ // delay(300);
   /*int beta=(EEPROM.get(address, lento));
   Serial.println(String(beta));
   delay(600);
@@ -480,13 +481,6 @@ encsCounter = constrain(encsCounter, 0, 600);
   }
 ///********************
 }
-
-
-
-
-
-
-
 
 
 
