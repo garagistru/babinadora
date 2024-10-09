@@ -1,4 +1,4 @@
-const int magneto = 2;  // колисество сигналов от вала для сдвига
+const int magneto = 2;  // количество сигналов от вала для сдвига
 
 // testo  Trabajo counterTick fin
 
@@ -479,7 +479,7 @@ encsCounter = constrain(encsCounter, 0, 600);
     btnTimer = millis();
     // Serial.println("release");
   }
-///********************
+///********************backlight();   
 }
 
 
