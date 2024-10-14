@@ -2,11 +2,11 @@ const int magneto = 2;  // колисество сигналов от вала �
 
 // testo  Trabajo counterTick fin
 
-const double St= 2;//пробное дл
+const double St= 3.8709677;//пробное дл
 
-//коэфициэнтпересчета при счетчике на 600- 6,45161
-//коэфициэнтпересчета при счетчике на 200- 2,150537
-//коэфициэнтпересчета при счетчике на 360- 3,8709677
+//коэфициэнтпересчета при счетчике на 600- 6.45161
+//коэфициэнтпересчета при счетчике на 200- 2.150537
+//коэфициэнтпересчета при счетчике на 360- 3.8709677
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
 #include <EEPROM.h>
@@ -111,7 +111,7 @@ bool puntoDerechaFlag = false;    // флаг правого положения
 volatile int counterTick = 0;       // переменная-счётчик
 volatile bool intFlagTick = false;  // флаг!!!!!!!!!!!!!!!!!!!!!
 volatile int counter = 0; // переменная-счётчик
-volatile int counterSt = counter/St; // переменная-счётчик на коэфициенте
+volatile int counterSt = 0; // переменная-счётчик на коэфициенте
           
 volatile bool intFlag = false;      // флаг!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 int houser = 0;                     // сделать память
@@ -271,7 +271,9 @@ void buttonTick()  // сработка от прерывания счетчик
     intFlagTick = false;
   }
 
-  if (intFlag && counter < EEPROM.get(address, lento)) {
+  counterSt=counter/St;
+  
+  if (intFlag && counterSt < EEPROM.get(address, lento)) {
     // intFlag = false;  // сбрасываем
     // совершаем какие-то действия
     // counter++;  // + нажатие
@@ -281,7 +283,7 @@ void buttonTick()  // сработка от прерывания счетчик
    // digitalWrite(testDiod, 1);  //  сигнал diod
   }
 
-  else if (counter >= EEPROM.get(address, lento)) {
+  else if (counterSt >= EEPROM.get(address, lento)) {
     //                                     digitalWrite(PinLamp, 1);  //  сигнал 0 на реле
  //   digitalWrite(testDiod, 0);  //  сигнал diod
 
@@ -428,7 +430,7 @@ void loop() {
     
     // lcd.clear();
     lcd.setCursor(3, 0);
-    lcd.print( String(counter)+" mm");
+    lcd.print( String(counterSt)+" mm");
 
      lcd.setCursor(0, 1);
     int asco=EEPROM.get(address, lento);
@@ -437,13 +439,13 @@ void loop() {
     delay(300);
   }
 
-  if (counter > 0) {
+ /* if (counter > 0) {
     lcd.clear();
     lcd.setCursor(3, 0);
     lcd.print(String(counter));
     // delay(100);
   }
-
+*/
   ////--------------------*******
   Derecha();
   Recalculo();
