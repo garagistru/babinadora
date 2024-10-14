@@ -1,10 +1,12 @@
-const int magneto = 2;  // количество сигналов от вала для сдвига
+const int magneto = 2;  // колисество сигналов от вала для сдвига
 
 // testo  Trabajo counterTick fin
 
-//int testDiod = 4;  //////////////////////подключаем светодиод
+const double St= 2;//пробное дл
 
-
+//коэфициэнтпересчета при счетчике на 600- 6,45161
+//коэфициэнтпересчета при счетчике на 200- 2,150537
+//коэфициэнтпересчета при счетчике на 360- 3,8709677
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
 #include <EEPROM.h>
@@ -108,7 +110,9 @@ bool puntoDerechaFlag = false;    // флаг правого положения
 
 volatile int counterTick = 0;       // переменная-счётчик
 volatile bool intFlagTick = false;  // флаг!!!!!!!!!!!!!!!!!!!!!
-volatile int counter = 0;           // переменная-счётчик
+volatile int counter = 0; // переменная-счётчик
+volatile int counterSt = counter/St; // переменная-счётчик на коэфициенте
+          
 volatile bool intFlag = false;      // флаг!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 int houser = 0;                     // сделать память
 bool status;
@@ -239,7 +243,7 @@ void Recalculo() {
     delay(2000);
     Serial.println(String("Trabajo "));
     // обнуление счетчика
-    counter = 0;
+    counter = 0;/////////////////////////////////------------------
     counterTick = 0;
     digitalWrite(moto, 0);
     // !!!!!!11 включился мотор укладчика надо заменить на flag
@@ -479,8 +483,15 @@ encsCounter = constrain(encsCounter, 0, 600);
     btnTimer = millis();
     // Serial.println("release");
   }
-///********************backlight();   
+///********************
 }
+
+
+
+
+
+
+
 
 
 
