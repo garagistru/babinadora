@@ -1,35 +1,102 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap');
-body
+
 
 /* общие стили*/
-{
+body {
+      background-color: slategrey;
       font-family: "Roboto", sans-serif;
-     background-color: #1C1C1C;  
       color: #fff;
 }
-a{
+.wrapper {
+      max-width: 1420px;
+      margin-left: auto;
+    margin-right: auto;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+a {
       color: #fff;
+}
+.container
+{
+      max-width: 1140px;
+
 }
 
-.heder {
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+      font-weight: 500;
+      font-size: 16px;
+   
+      width: 165px;
+      height: 50px;
+  
+      background: #F6762C;
+      border-radius: 5px;
+
+text-transform: uppercase;
+transition: opaciti 0.3s;
+
+}
+
+.btn:hover
+{
+      opacity: 0.8;
+      
+}
+
+/*    стили   header*/
+.header {
+      padding:  25px 0;
+      display: flex;
+      justify-content: ;
+      align-items: center;
+      
+}
+.header .container
+{
       display: flex;
       justify-content: space-between;
       align-items: center;
 }
 
-.header__logo {
-     
-}
 
-.heder__nav {
+.header__logo {}
 
-}
+.header__nav {}
 
 .header__ul {
       display: flex;
-    gap: 30px;
+      gap: 30px;
 }
 
-.btn {
+.header__nav a {
+      font-size: 14px;
+      opacity: 0.7;
+      transition: opaciti 0.3s;
 
 }
+.header__nav a:hover {
+      
+opacity: 1;
+}
+
+.header__nav a.activ {
+      font-size: 14px;
+      opacity: 1;
+
+
+}
+
+/*
+
+
+width: 1169px;
+height: 100px;
+left: 201px;
+top: 0px;
+
+*/
