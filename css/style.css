@@ -21,7 +21,7 @@ a {
 .container
 {
       max-width: 1140px;
-
+      margin: 0 auto;
 }
 
 .btn {
@@ -52,7 +52,7 @@ transition: opaciti 0.3s;
 .header {
       padding:  25px 0;
       display: flex;
-      justify-content: ;
+      justify-content:space-between;
       align-items: center;
       
 }
@@ -61,6 +61,7 @@ transition: opaciti 0.3s;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 50px;
 }
 
 
