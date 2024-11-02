@@ -1,4 +1,4 @@
-const int magneto = 2;  // колисество сигналов от вала для сдвига
+Sconst int magneto = 2;  // колисество сигналов от вала для сдвига
 
 // testo  Trabajo counterTick fin
 
