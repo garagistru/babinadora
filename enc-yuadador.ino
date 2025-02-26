@@ -43,10 +43,9 @@ void ints0()
     lastStates = states0;
   }
 }
-
-void loop()
+void asignar()
 {
-  encsCounter = constrain(encsCounter, 0, 600);
+encsCounter = constrain(encsCounter, 0, 600);
   // int coco=map(encCounter,-300,300,0, 600);  ///длинна
   // coco= constrain(coco,0,600);
   //   Serial.println("coco - "+String(coco));
@@ -78,4 +77,8 @@ void loop()
     btnTimer = millis();
     // Serial.println("release");
   }
+}
+void loop()
+{
+  asignar( );
 }
