@@ -52,7 +52,7 @@ void setup()
 
 
 
-void ints0()
+void ints0()// длинна
 {
   states0 = digitalRead(TicksA);
   if (states0 != lastStates)
@@ -68,7 +68,7 @@ void ints0()
   }
 }
 //------------------------------------------------------
-void intS0()
+void intS0()// скорость
 {
   stateS0 = digitalRead(TickSA);
   if (stateS0 != lastStateS)
@@ -123,7 +123,7 @@ encsCounter = constrain(encsCounter, 0, 600);
 //---------------
 void asignarSpeed()
 {
-encSCounter = constrain(encSCounter, 1000, 2400);
+encSCounter = constrain(encSCounter, 1, 24);
   // int coco=map(encCounter,-300,300,0, 600);  ///длинна
   // coco= constrain(coco,0,600);
   //   Serial.println("coco - "+String(coco));
@@ -161,7 +161,7 @@ encSCounter = constrain(encSCounter, 1000, 2400);
 
 void loop()
 {
-  //asignar( );
+  asignar( );
   delay(400);
   asignarSpeed();
 }
